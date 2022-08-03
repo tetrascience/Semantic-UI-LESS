@@ -1,0 +1,37 @@
+name: Publish
+
+on:
+  push:
+    # tags: '*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Configure JFrog Artifactory
+        run: |
+          echo "registry=${{ secrets.JFROG_ARTIFACTORY_NPM_VIRTUAL_URL }}" >> .npmrc
+          echo "_auth=${{ secrets.JFROG_ARTIFACTORY_PLATFORM_UI_NPM_AUTH }}" >> .npmrc
+          echo "always-auth=true" >> .npmrc
+
+      - run: yarn install --immutable
+
+      # - name: match-tag-to-package-version
+      #   id: match-version
+      #   uses: geritol/match-tag-to-package-version@0.2.0
+      #   with:
+      #     TAG_PREFIX: v
+
+      - name: Configure JFrog Artifactory (Publish)
+        run: |
+          sed -i "s/registry: .*//g" .npmrc
+          echo "registry=${{ secrets.JFROG_ARTIFACTORY_PLATFORM_UI_URL }}" >> .npmrc
+
+      - name: Publish package
+        #if: steps.match-version.PACKAGE_VERSION == steps.match-version.TAG_VERSION
+        run: yarn publish
