@@ -30,7 +30,7 @@ jobs:
       - name: Configure JFrog Artifactory (Publish)
         run: |
           sed -i "s/registry: .*//g" .npmrc
-          echo "registry: ${{ secrets.JFROG_ARTIFACTORY_PLATFORM_UI_URL }}" >> .npmrc
+          echo "registry=${{ secrets.JFROG_ARTIFACTORY_PLATFORM_UI_URL }}" >> .npmrc
 
       - name: Publish package
         #if: steps.match-version.PACKAGE_VERSION == steps.match-version.TAG_VERSION
