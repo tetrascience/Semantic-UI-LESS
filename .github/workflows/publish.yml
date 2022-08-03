@@ -21,20 +21,6 @@ jobs:
 
       - run: yarn install --immutable
 
-      - name: Check if Typescript
-        id: check_typescript
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "tsconfig.json"
-
-      - name: yarn build
-        if: steps.check_typescript.outputs.files_exists == 'true'
-        run: yarn build
-
-      - name: yarn test
-        if: ${{ inputs.run_tests }}
-        run: yarn test
-
       # - name: match-tag-to-package-version
       #   id: match-version
       #   uses: geritol/match-tag-to-package-version@0.2.0
@@ -48,4 +34,4 @@ jobs:
 
       - name: Publish package
         #if: steps.match-version.PACKAGE_VERSION == steps.match-version.TAG_VERSION
-        run: yarn npm publish
+        run: yarn publish
